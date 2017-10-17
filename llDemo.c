@@ -18,24 +18,25 @@ int gets_n(char *s, int limit)
   return (p - s);		/* #chars read (not including terminator or \n*/
 }
 
-int main()
+void main()
 {
+    printf("Welcome to Robert Facio's Arch 1 Demo~~!");
+    
   char buf[100];
-  LList *lp = llAlloc();	/* make empty list */
+  BST *bst = BSTAlloc();	/* make empty list */
 
-  llPrint(lp, "List contents, prior to reading input:");
+  printf("Time to build the Binary Search Tree!");
 
-  while (gets_n(buf, 100))	/* build list */
-    llPut(lp, buf);
-
-  llPrint(lp, "List contents, after building list:");
-
-  llMakeEmpty(lp);
-
-  printf("After emptying the list...");
-  llPrint(lp, 0);		/* default message */
-
-  llFree(lp);
-
-  return 0;
+  while (gets_n(buf, 100)){	/* build list */
+   printf("Enter a name you want to add, or type 'exit' to stop: ");
+   
+   if(strcmp(buf,"exit") == 0){
+      break;
+   }
+   
+   BSTadd(bst, buf);
+  }
+  
+  printBSThelp(bst);
+  
 }

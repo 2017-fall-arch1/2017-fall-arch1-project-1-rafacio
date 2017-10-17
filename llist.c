@@ -2,100 +2,77 @@
 #include <stdlib.h> 		/* for malloc */
 #include <assert.h>		/* for assert */
 #include "llist.h"		
+#include <string.h>
 
-int llDoCheck = 1;		/* set true for paranoid consistency checking */
+/* int llDoCheck = 1;		 set true for paranoid consistency checking */
 
 #define doCheck(_lp) (llDoCheck && llCheck(_lp))
 
 /* create a new list */
-LList *llAlloc()
+BST *BSTAlloc()
 {
-  LList *lp = (LList *)malloc(sizeof(LList));
-  lp->first = lp->last = 0;
-  doCheck(lp);
-  return lp;
-}
-
-/* recycle a list, discarding all items it contains */
-void llFree(LList *lp)
-{
-  doCheck(lp);
-  llMakeEmpty(lp);
-  free(lp);
+  BST *bst = (BST *)malloc(sizeof(BST));
+  bst->root = NULL;
+  return bst;
 }
 
 /* Delete all elements off of the list */
-void llMakeEmpty(LList *lp)
-{
-  LLItem *current = lp->first, *next;
-  doCheck(lp);
-  while (current) {
-    next = current->next;
-    free(current->str);
-    free(current);
-    current = next;
-  }
-  lp->first = lp->last = 0;	/* list is empty */
-  doCheck(lp);
+
+void printBSThelp(BST *bst){
+    printBST(bst->root);
 }
-  
-/* append a copy of str to end of list */
-void llPut(LList *lp, char *s)
-{
-  int len;
-  char *scopy;
-  LLItem *i;
 
-  doCheck(lp);
-  /* w = freshly allocated copy of putWord */
-  for (len = 0; s[len]; len++) /* compute length */
-    ;
-  scopy = (char *)malloc(len+1);
-  for (len = 0; s[len]; len++) /* copy chars */
-    scopy[len] = s[len];
-  scopy[len] = 0;			/* terminate copy */
-
-
-  /* i = new item containing s */
-  i = (LLItem *)malloc(sizeof(LLItem));
-  i->str = scopy;
-  i->next = 0;
-
-  /* append to end of list */
-  if (lp->last) {			/* list not empty */
-    lp->last->next = i;
-  } else {			/* list empty */
-    lp->first = i;
+void printBST(Child *node){
+  if(node != NULL){
+    printBST(node->left);
+    printf("%s\n", node->str);
+    printBST(node->right);
   }
+}
+
+/* Adds a node */
+void BSTadd(BST *bst, char *s)
+{
+  int length;
+  char *scopy;
+  Child *i;
+
+  /* w = freshly allocated copy of putWord */
+  for (length = 0; s[length]; length++) /* compute length */
+    ;
+  
+  scopy = (char *)malloc(length+1);
+  
+  for (length = 0; s[length]; length++){ /* copy chars */
+    scopy[length] = s[length];
+  }
+  
+  scopy[length] = 0;			/* terminate copy */
+
+
+  i->str = scopy;
+  i->left = NULL;
+  i->right = NULL;
 
   /* new item is last on list */
-  lp->last = i;
-  doCheck(lp);
+  bst->root = addNode(bst->root, i);
+}
+
+Child* addNode(Child *root, Child *node){
+  if(root == NULL){
+      return node;
+  }
+  
+  int cmpValue = strcmp(node->str, root->str);
+  if(cmpValue < 0){
+      root->left = addNode(root->left, node);
+  }
+  else{
+      root->right = addNode(root->right, node);
+  }
+  
+  return root;
 }
 
 /* print list membership.  Prints default mesage if message is NULL */
-void llPrint(LList *lp, char *msg)
-{
-  LLItem *ip;
-  int count = 1;
-  doCheck(lp);
-  puts(msg ? msg :" List contents:");
-  for (ip = lp->first; ip; ip = ip->next) {
-    printf("  %d: <%s>\n", count, ip->str);
-    count++;
-  }
-}
 
-/* check llist consistency */
-int llCheck(LList *lp)
-{
-  LLItem *ip;
-  ip = lp->first;
-  if (!ip) 
-    assert(lp->last == 0);
-  else {
-    for (; ip->next; ip = ip->next);
-    assert(ip == lp->last);
-  }
-  return 0;
-}

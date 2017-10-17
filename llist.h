@@ -2,35 +2,29 @@
 #define llist_included
 
 
-/* a linked-list item */
-typedef struct LLItem_s {
-  struct LLItem_s *next; 
+/* Binary Search Tree 'helper' */
+typedef struct Child{
+  struct Child *left, *right; 
   char *str;
-} LLItem;
+} Child;
 
-/* a list of LLItems */
+/* Binary Search Tree Root*/
 typedef struct {
-  LLItem *first, *last;
-} LList;
+  Child *root;
+} BST;
 
-extern int llDoCheck;		/* set true for paranoid consistency checking */
 
-/* create a new list */
-LList *llAlloc();
+/* Creates a New Binary Search Tree */
+BST *BSTAlloc();
 
-/* free memory associated with a list, discarding all items it contains */
-void llFree(LList *lp);
+Child* addNode(Child *root, Child *node);
 
-/* append a copy of str to end of list */
-void llPut(LList *lp, char *s);
+void BSTfree(BST *bst);
 
-/* Delete all elements off of the list */
-void llMakeEmpty(LList *lp);
+void BSTadd(BST *bst, char *s);
 
-/* print list membership.  Prints default mesage if message is NULL */
-void llPrint(LList *lp, char *msg);
+void printBSThelp(BST *bst);
 
-/* check llist consistency, always returns zero */
-int llCheck(LList *lp);
+
 
 #endif	/* included */
